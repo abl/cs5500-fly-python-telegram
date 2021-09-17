@@ -1,0 +1,47 @@
+# fly.toml file generated for cs5500-flygram on 2021-09-16T20:00:25-07:00
+
+app = "cs5500-flygram"
+
+kill_signal = "SIGINT"
+kill_timeout = 5
+processes = []
+
+[build]
+  builtin = "python"
+
+[env]
+
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
+
+[[services]]
+  internal_port = 8080
+  protocol = "tcp"
+
+  [[services.http_checks]]
+    interval = 10000
+    grace_period = "5s"
+    method = "get"
+    path = "/healthz/live"
+    protocol = "http"
+    timeout = 2000
+    tls_skip_verify = false
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+    type = "connections"
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+  [[services.tcp_checks]]
+    grace_period = "1s"
+    interval = "15s"
+    restart_limit = 6
+    timeout = "2s"
